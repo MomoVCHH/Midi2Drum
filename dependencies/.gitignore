@@ -1,3 +1,4 @@
 # ignore dependencies
 *
 !.gitignore
+!install_dependencies.md

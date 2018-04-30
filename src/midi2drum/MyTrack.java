@@ -18,9 +18,11 @@ import java.util.TreeSet;
 public class MyTrack {
 	public List<MyNote> myNoteList = new ArrayList<MyNote>();
 	public Set<Integer> midiNoteSet = new HashSet<Integer>();
-	public SortedSet<Entry<Integer, Integer>> SortedSet;
+	public SortedSet<Entry<Integer, Integer>> sortedSet;
 	private TreeMap<Integer, Integer> midiNoteFrequencyHmap = new TreeMap<Integer, Integer>();
-	public TreeMap<Integer, Integer> mappingDrumAssignment = new TreeMap<Integer, Integer>(); 
+	public TreeMap<Integer, Integer> mappingDrumAssignment = new TreeMap<Integer, Integer>();
+	 //assignment of drums
+	private int[] drum = {8,9,7,10,6,11,1,2,3,4,5}; //TODO createOwn
 	
 	private int maxVelocity = 0;
 	private int minVelocity = 127;
@@ -33,6 +35,11 @@ public class MyTrack {
 	 */
 	public String getInstrumentName() {
 		return instrumentName;
+	}
+	
+	public int getPositionInDrumList(int i) {
+		
+		return 0;
 	}
 
 	/**
@@ -95,13 +102,11 @@ public class MyTrack {
 	
 	public void buildMidiNoteFrequencyHmap() {
 		// TODO Auto-generated method stub
-		SortedSet = entriesSortedByValues(midiNoteFrequencyHmap);
-		System.out.println("sorted set midiNotes=Frequency:" + SortedSet);
+		sortedSet = entriesSortedByValues(midiNoteFrequencyHmap);
+		System.out.println("sorted set midiNotes=Frequency:" + sortedSet);
 
-		//assignment of drums
-		int[] drum = {8,9,7,10,6,11,1,2,3,4,5}; //TODO createOwn
 		@SuppressWarnings("rawtypes")
-		Iterator it = SortedSet.iterator();
+		Iterator it = sortedSet.iterator();
 		int i = 0;
 		int value;
 	    while (it.hasNext()) {
@@ -118,13 +123,13 @@ public class MyTrack {
 	        {
 	        	value = drum[i];//8,9,7,10,6,11,...
 				mappingDrumAssignment.put((Integer) pair.getKey(), value);
+				++i;
 	        }
 	        else 
 	        {
 	        	//value = i;
 	        	//mappingDrumAssignment.put((Integer) pair.getKey(), value);
 	        }	
-	        ++i;
 	    }
 	    System.out.println("Mapping MidiNote=InGameChannel:" + mappingDrumAssignment);
 	}

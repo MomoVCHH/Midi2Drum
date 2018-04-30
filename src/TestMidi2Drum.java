@@ -15,13 +15,14 @@ public class TestMidi2Drum {
 		System.out.println("<<<<start of Creation>>>>");
 		MidiToITR midiToITR;
 		// "./resources/River Flows in you.mid"
+		//TODO put midifile to github
 		String MIDIFileName = "Guns_n_Roses_-_Sweet_Child_O_Mine.mid";
 		String artisName = "Guns n Roses";
 		String titleName = "Guns_n_Roses_-_Sweet_Child_O_Mine";
 		String producerName = "Auto Generated midi2Drum";
 		int level = 11;
 		
-		midiToITR = new MidiToITR("resources" + File.separator + MIDIFileName );
+		midiToITR = new MidiToITR("resources" + File.separator + "testdata" + File.separator + MIDIFileName );
 		midiToITR.printInformationMidiFile();
 		System.out.println("Detecting Drums Channel");
 		System.out.println("Drum Channel is:" + midiToITR.getNumTrackDrums());
@@ -30,8 +31,9 @@ public class TestMidi2Drum {
 			String resourcesPath = new File("resources").getAbsolutePath();
 			String outputPath = new File("output").getAbsolutePath();
 			
-			midiToITR.convertTrackToITR(outputPath + File.separator + titleName + ".itr", artisName, titleName,
-					producerName, level, "Guns_n_Roses.jpg", midiToITR.getNumTrackDrums(), 1);
+			double volume = 0.7;
+			midiToITR.convertTrackToITR(outputPath + File.separator + titleName + ".itr", artisName, titleName, titleName + ".wav",
+					producerName, level, volume , "Guns_n_Roses.jpg", midiToITR.getNumTrackDrums(), 1);
 			midiToITR.createSingleNoteMidi(resourcesPath + File.separator + "Guns_n_Roses_-_Sweet_Child_O_Mine.mid", 
 					midiToITR.getNumTrackDrums(),titleName);
 		

@@ -1,8 +1,10 @@
+
 // Copyright (c) 2018 The Midi2Drum developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 import java.awt.EventQueue;
+
 import java.awt.Font;
 import java.awt.Image;
 
@@ -20,7 +22,6 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.awt.event.ActionEvent;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EtchedBorder;
@@ -31,11 +32,11 @@ import midi2drum.PictureFileFilter;
 
 import java.awt.Toolkit;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import java.awt.TextArea;
 import java.awt.Color;
 import javax.swing.SwingConstants;
+import javax.swing.JCheckBox;
 
 public class Midi2DrumUI {
 
@@ -50,12 +51,13 @@ public class Midi2DrumUI {
 	private File midiFile;
 	private File pictureFile;
 	private MidiToITR midiToITR;
-	private JButton buttonPlay;
-	private JButton buttonStop;
-	private JButton buttonLoadMidi;
-	private JButton buttonExport;
+	private Button buttonPlay;
+	private Button buttonStop;
+	private Button buttonLoadMidi;
+	private Button buttonExport;
 	private TextArea textAreaLog;
 	private JLabel lblPicture;
+	private JLabel lblVolume;
 
 	/**
 	 * Launch the application.
@@ -114,13 +116,13 @@ public class Midi2DrumUI {
 		frmMidiToIntotherhythmVRSongGenerator = new JFrame();
 		frmMidiToIntotherhythmVRSongGenerator.setIconImage(Toolkit.getDefaultToolkit().getImage("resources\\icons\\drumsticks3.png"));
 		frmMidiToIntotherhythmVRSongGenerator.setTitle("Midi2Drum -  Song Generator");
-		frmMidiToIntotherhythmVRSongGenerator.setBounds(100, 100, 795, 659);
+		frmMidiToIntotherhythmVRSongGenerator.setBounds(500, 100, 908, 659);
 		frmMidiToIntotherhythmVRSongGenerator.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmMidiToIntotherhythmVRSongGenerator.getContentPane().setLayout(null);
 
 		JPanel panel = new JPanel();
 		panel.setBorder(new CompoundBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null), null));
-		panel.setBounds(10, 103, 532, 140);
+		panel.setBounds(10, 108, 532, 140);
 		frmMidiToIntotherhythmVRSongGenerator.getContentPane().add(panel);
 		panel.setLayout(null);
 
@@ -143,11 +145,11 @@ public class Midi2DrumUI {
 		panel.add(lblArtistName);
 
 		lblDrumIsOn = new JLabel("Drums are on Track");
-		lblDrumIsOn.setBounds(10, 104, 125, 14);
+		lblDrumIsOn.setBounds(44, 110, 125, 14);
 		panel.add(lblDrumIsOn);
 
 		tf_drumTrack = new TextField();
-		tf_drumTrack.setBounds(141, 97, 22, 20);
+		tf_drumTrack.setBounds(10, 110, 22, 20);
 		panel.add(tf_drumTrack);
 
 		JLabel lblLevel = new JLabel("Level");
@@ -156,19 +158,19 @@ public class Midi2DrumUI {
 
 		Integer[] comboLevel = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
 		@SuppressWarnings("rawtypes")
-		JComboBox comboBox = new JComboBox(comboLevel);
+		JComboBox comboBoxLevel = new JComboBox(comboLevel);
 		// set standard level to 5
-		comboBox.setSelectedIndex(4);
-		comboBox.setBounds(55, 69, 57, 22);
-		panel.add(comboBox);
+		comboBoxLevel.setSelectedIndex(4);
+		comboBoxLevel.setBounds(55, 69, 57, 22);
+		panel.add(comboBoxLevel);
 
 		textAreaLog = new TextArea();
 		textAreaLog.setForeground(Color.BLACK);
 		textAreaLog.setEditable(false);
-		textAreaLog.setBounds(10, 313, 742, 160);
+		textAreaLog.setBounds(10, 426, 742, 125);
 		frmMidiToIntotherhythmVRSongGenerator.getContentPane().add(textAreaLog);
 
-		buttonLoadMidi = new JButton("load Midi File...");
+		buttonLoadMidi = new Button("load Midi File...");
 		buttonLoadMidi.setFont(new Font("Dialog", Font.PLAIN, 12));
 		buttonLoadMidi.setActionCommand("");
 		buttonLoadMidi.addActionListener(new ActionListener() {
@@ -222,7 +224,7 @@ public class Midi2DrumUI {
 		tf_midiFile.setBounds(123, 29, 363, 20);
 		frmMidiToIntotherhythmVRSongGenerator.getContentPane().add(tf_midiFile);
 
-		buttonPlay = new JButton("play");
+		buttonPlay = new Button("play");
 		buttonPlay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				midiToITR.sequencerStart();
@@ -234,7 +236,7 @@ public class Midi2DrumUI {
 		buttonPlay.setBounds(10, 64, 41, 22);
 		frmMidiToIntotherhythmVRSongGenerator.getContentPane().add(buttonPlay);
 
-		buttonStop = new JButton("stop");
+		buttonStop = new Button("stop");
 		buttonStop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				midiToITR.sequencerStop();
@@ -246,7 +248,7 @@ public class Midi2DrumUI {
 		buttonStop.setBounds(62, 64, 41, 22);
 		frmMidiToIntotherhythmVRSongGenerator.getContentPane().add(buttonStop);
 
-		JButton buttonLoadAlbumCoverPhoto = new JButton("load Album Cover Picture...");
+		Button buttonLoadAlbumCoverPhoto = new Button("load Album Cover Picture...");
 		buttonLoadAlbumCoverPhoto.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (fc == null) {
@@ -289,68 +291,114 @@ public class Midi2DrumUI {
 		buttonLoadAlbumCoverPhoto.setActionCommand("");
 		buttonLoadAlbumCoverPhoto.setBounds(591, 27, 161, 22);
 		frmMidiToIntotherhythmVRSongGenerator.getContentPane().add(buttonLoadAlbumCoverPhoto);
-
-		buttonExport = new JButton("export to Into the Rhythm");
-		buttonExport.setEnabled(false);
-		buttonExport.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				if (Integer.parseInt(tf_drumTrack.getText()) != midiToITR.getNumTrackDrums()) {
-					midiToITR.setNumTrackDrums(Integer.parseInt(tf_drumTrack.getText()));
-					textAreaLog.append("Drums manually set to:" + midiToITR.getNumTrackDrums());
-				}
-
-				String outputPath = new File("output").getAbsolutePath();
-				
-				if (tf_songTitle.getText().length() == 0)
-				{
-					tf_songTitle.setText("NoTitleName");
-				}
-				if (tf_artistName.getText().length() == 0)
-				{
-					tf_artistName.setText("NoArtistName");
-				}
-				if (pictureFile == null) {
-					pictureFile = new File("resources" + File.separator + "coverAlbum" + File.separator + "alt-antik-antiquitat-164899.jpg");
-					BufferedImage img = null;
-					try {
-						img = ImageIO.read(pictureFile);
-						Image dimg = img.getScaledInstance(lblPicture.getWidth(), lblPicture.getHeight(),
-								Image.SCALE_AREA_AVERAGING);
-						ImageIcon imageIcon = new ImageIcon(dimg);
-						lblPicture.setIcon(imageIcon);
-
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-
-				midiToITR.convertTrackToITR(outputPath + File.separator + tf_songTitle.getText() + ".itr",
-						tf_artistName.getText(), tf_songTitle.getText(), "automatic generated by MIDI2DRUM",
-						(int) comboBox.getSelectedItem(), pictureFile.getAbsolutePath(), midiToITR.getNumTrackDrums(),
-						1);
-
-				try {
-					textAreaLog.append("...generating wav files this could take some time (more than 1 minute)");
-					midiToITR.convertMidiToWavFile(midiFile.getAbsolutePath(),
-							outputPath + File.separator + "BGM" + File.separator + tf_songTitle.getText() + ".wav");
-					textAreaLog.append("convertion completed:\n" + outputPath + File.separator
-							+ tf_songTitle.getText() + ".itr\n was generated\n");
-					midiToITR.createSingleNoteMidi(midiFile.getAbsolutePath(), 
-							midiToITR.getNumTrackDrums(), tf_songTitle.getText());
-								
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		buttonExport.setBounds(10, 256, 142, 22);
-		frmMidiToIntotherhythmVRSongGenerator.getContentPane().add(buttonExport);
-
+		
 		lblPicture = new JLabel("picture");
 		lblPicture.setHorizontalAlignment(SwingConstants.CENTER);
 		lblPicture.setIcon(null);
 		lblPicture.setBounds(552, 64, 213, 214);
 		frmMidiToIntotherhythmVRSongGenerator.getContentPane().add(lblPicture);
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBorder(new CompoundBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null), null));
+		panel_1.setBounds(10, 260, 532, 160);
+		frmMidiToIntotherhythmVRSongGenerator.getContentPane().add(panel_1);
+		panel_1.setLayout(null);
+		
+		JCheckBox chckbxGenerateWavFiles = new JCheckBox("generate wav files from MIDI");
+		chckbxGenerateWavFiles.setBounds(24, 14, 253, 24);
+		panel_1.add(chckbxGenerateWavFiles);
+		chckbxGenerateWavFiles.setSelected(true);
+		
+		JCheckBox chckbxGenerateWavWithoutDrums = new JCheckBox("generate wav without drums ");
+		chckbxGenerateWavWithoutDrums.setBounds(74, 42, 230, 23);
+		panel_1.add(chckbxGenerateWavWithoutDrums);
+		chckbxGenerateWavWithoutDrums.setSelected(true);
+		
+				buttonExport = new Button("export to Into the Rhythm");
+				buttonExport.setBounds(24, 128, 142, 22);
+				panel_1.add(buttonExport);
+				buttonExport.setEnabled(false);
+				
+				lblVolume = new JLabel(" Volume");
+				lblVolume.setBounds(23, 96, 57, 14);
+				panel_1.add(lblVolume);
+				Double[] comboVolume = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+				@SuppressWarnings("rawtypes")
+				JComboBox comboBoxVolume = new JComboBox(comboVolume);
+				comboBoxVolume.setBounds(88, 92, 57, 22);
+				panel_1.add(comboBoxVolume);
+				comboBoxVolume.setSelectedIndex(6);
+				
+				buttonExport.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						if (Integer.parseInt(tf_drumTrack.getText()) != midiToITR.getNumTrackDrums()) {
+							midiToITR.setNumTrackDrums(Integer.parseInt(tf_drumTrack.getText()));
+							textAreaLog.append("Drums manually set to:" + midiToITR.getNumTrackDrums());
+						}
+
+						String outputPath = new File("output").getAbsolutePath();
+						
+						if (tf_songTitle.getText().length() == 0)
+						{
+							tf_songTitle.setText("NoTitleName");
+						}
+						if (tf_artistName.getText().length() == 0)
+						{
+							tf_artistName.setText("NoArtistName");
+						}
+						if (pictureFile == null) {
+							pictureFile = new File("resources" + File.separator + "coverAlbum" + File.separator + "alt-antik-antiquitat-164899.jpg");
+							BufferedImage img = null;
+							try {
+								img = ImageIO.read(pictureFile);
+								Image dimg = img.getScaledInstance(lblPicture.getWidth(), lblPicture.getHeight(),
+										Image.SCALE_AREA_AVERAGING);
+								ImageIcon imageIcon = new ImageIcon(dimg);
+								lblPicture.setIcon(imageIcon);
+
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+						String titleWav;
+						if(chckbxGenerateWavWithoutDrums.isSelected() == true) {
+							 titleWav = tf_songTitle.getText() + "_withoutDrum.wav";
+						}
+						else {
+							titleWav = tf_songTitle.getText() + ".wav";
+						}
+						midiToITR.convertTrackToITR(outputPath + File.separator + "ITR" + File.separator + tf_songTitle.getText() + ".itr",
+								tf_artistName.getText(), tf_songTitle.getText(), titleWav, "automatic generated by MIDI2DRUM",
+								(int) comboBoxLevel.getSelectedItem(),(double) comboBoxVolume.getSelectedItem(), pictureFile.getAbsolutePath(), midiToITR.getNumTrackDrums(),
+								1);
+						
+						if(chckbxGenerateWavFiles.isSelected())
+						{
+						try {
+							String outputWav =  outputPath + File.separator + "BGM" + File.separator + tf_songTitle.getText();
+							if(chckbxGenerateWavWithoutDrums.isSelected() == true){
+								outputWav += "_withoutDrum.wav";	
+							}
+							else {
+								outputWav += ".wav";	
+							}
+								
+							
+							textAreaLog.append("...generating wav files this could take some time (more than 1 minute)");
+							midiToITR.convertMidiToWavFile(midiFile.getAbsolutePath(),
+									outputWav, chckbxGenerateWavWithoutDrums.isSelected());
+							
+							midiToITR.createSingleNoteMidi(midiFile.getAbsolutePath(), 
+									midiToITR.getNumTrackDrums(), tf_songTitle.getText());
+										
+						} catch (IOException | InvalidMidiDataException e) {
+							e.printStackTrace();
+						}
+					}
+						textAreaLog.append("convertion completed:\n" + outputPath + File.separator
+								+ tf_songTitle.getText() + ".itr\n was generated\n");
+					}
+				});
 	}
 
 	private void enablePlay() {

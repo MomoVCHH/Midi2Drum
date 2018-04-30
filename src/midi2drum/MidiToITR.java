@@ -81,7 +81,7 @@ public class MidiToITR {
 	}
 
 	public void createSingleNoteMidi(String midiFileInput, int numTrack, String titleName) throws IOException {
-		for(Map.Entry<Integer,Integer> entry : myTrack[numTrack].mappingDrumAssignment.entrySet())
+		for (Map.Entry<Integer, Integer> entry : myTrack[numTrack].mappingDrumAssignment.entrySet())
 			try {
 				System.out.println("Midifile creation for" + entry.getKey());
 				createSingleDrumWav(entry.getKey(), titleName);
@@ -89,71 +89,73 @@ public class MidiToITR {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}
-	
-	private void createSingleDrumWav(int midiNote, String titleName) 
-			throws MidiUnavailableException, InvalidMidiDataException, IOException{
+	}
+
+	private void createSingleDrumWav(int midiNote, String titleName)
+			throws MidiUnavailableException, InvalidMidiDataException, IOException {
 		System.out.println(sequence.getTracks().length);
-		Sequence sequence2 = MidiSystem.getSequence(midiFile);    
-		//delete all tracks
-		for( int i = sequence2.getTracks().length - 1; i >=0; i-- ) {
+		Sequence sequence2 = MidiSystem.getSequence(midiFile);
+		// delete all tracks
+		for (int i = sequence2.getTracks().length - 1; i >= 0; i--) {
 			sequence2.deleteTrack(sequence2.getTracks()[i]);
 		}
-		
-		//now sequenc2 is empty
+
+		// now sequenc2 is empty
 		sequence2.createTrack();
 		System.out.println(sequence.getTracks().length);
 		System.out.println(sequence2.getTracks().length);
 		System.out.println("NumTrackDrums:" + numTrackDrums + "-" + sequence2.getTracks()[0].size());
-		
-		
-		//copy first single note
-		MidiEvent e_start = null;;
-		MidiEvent e_end = null;;
-		for(int i = 0; i < sequence.getTracks()[numTrackDrums].size(); i++) {
+
+		// copy first single note
+		MidiEvent e_start = null;
+		;
+		MidiEvent e_end = null;
+		;
+		for (int i = 0; i < sequence.getTracks()[numTrackDrums].size(); i++) {
 			if (sequence.getTracks()[numTrackDrums].get(i).getMessage() instanceof ShortMessage) {
 				ShortMessage s = (ShortMessage) (sequence.getTracks()[numTrackDrums].get(i).getMessage());
-				if( s.getChannel() != 9) {
-					
-				}
-				else
-				{
-					if(s.getCommand() == ShortMessage.NOTE_ON && s.getData1() == midiNote) {
-						e_start = new MidiEvent(new ShortMessage(s.getStatus(),s.getData1(),127),1);
-						
+				if (s.getChannel() != 9) {
+
+				} else {
+					if (s.getCommand() == ShortMessage.NOTE_ON && s.getData1() == midiNote) {
+						e_start = new MidiEvent(new ShortMessage(s.getStatus(), s.getData1(), 127), 1);
+
 					}
-					//midi_off                                  OR  midi_on with velocity 0 are two possibles to make a node_off in MIDI Standard 
-					if((s.getCommand() == ShortMessage.NOTE_OFF || (s.getCommand() == ShortMessage.NOTE_ON && s.getData2() == 0)) && s.getData1() == midiNote ) {
-						e_end = new MidiEvent(new ShortMessage(s.getStatus(),s.getData1(),0),1);
+					// midi_off OR midi_on with velocity 0 are two possibles to make a node_off in
+					// MIDI Standard
+					if ((s.getCommand() == ShortMessage.NOTE_OFF
+							|| (s.getCommand() == ShortMessage.NOTE_ON && s.getData2() == 0))
+							&& s.getData1() == midiNote) {
+						e_end = new MidiEvent(new ShortMessage(s.getStatus(), s.getData1(), 0), 1);
 						break;
 					}
-					if(s.getCommand() != ShortMessage.NOTE_OFF || s.getCommand() != ShortMessage.NOTE_OFF) {
-						//sequence2.getTracks()[0].add(sequence.getTracks()[numTrackDrums].get(i));
-					}		
+					if (s.getCommand() != ShortMessage.NOTE_OFF || s.getCommand() != ShortMessage.NOTE_OFF) {
+						// sequence2.getTracks()[0].add(sequence.getTracks()[numTrackDrums].get(i));
+					}
 				}
 			}
 		}
 		e_start.setTick(1);
 		sequence2.getTracks()[0].add(e_start);
-		e_end.setTick(sequence.getResolution()*4);
+		e_end.setTick(sequence.getResolution() * 4);
 		sequence2.getTracks()[0].add(e_end);
-		
+
 		System.out.println("NumTrackDrums:" + numTrackDrums + "-" + sequence2.getTracks()[0].size());
 		System.out.println("NumTrackDrums:" + numTrackDrums + "-" + sequence.getTracks()[numTrackDrums].size());
 		System.out.println("MidiNote:" + midiNote);
-		File tempMidFile = File.createTempFile( GeneralMidiPercussionKeyMap.getNameOfDrumForMidiNote(midiNote) , ".mid");
+		File tempMidFile = File.createTempFile(GeneralMidiPercussionKeyMap.getNameOfDrumForMidiNote(midiNote), ".mid");
 		try {
 			MidiSystem.write(sequence2, 0, tempMidFile);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		System.out.println("createMidiFile done");
-		//now convert it to wav format
-		String outputWavFile = new File("output\\Note Sound\\CustomNoteSound\\" + titleName + File.separator + 
-				GeneralMidiPercussionKeyMap.getNameOfDrumForMidiNote(midiNote)).getAbsolutePath() + ".wav";
-		convertMidiToWavFile(tempMidFile.getAbsolutePath().toString(), outputWavFile );
+		// now convert it to wav format
+		String outputWavFile = new File("output\\Note Sound\\CustomNoteSound\\" + titleName + File.separator
+				+ GeneralMidiPercussionKeyMap.getNameOfDrumForMidiNote(midiNote)).getAbsolutePath() + ".wav";
+		convertMidiToWavFile(tempMidFile.getAbsolutePath().toString(), outputWavFile);
 		System.out.println(tempMidFile.getAbsolutePath());
 		tempMidFile.delete();
 	}
@@ -230,11 +232,11 @@ public class MidiToITR {
 	}
 
 	public void parseMidi(File midiFile) throws InvalidMidiDataException, IOException {
-			sequence = MidiSystem.getSequence(midiFile);
-			midiFileFormat = MidiSystem.getMidiFileFormat(midiFile);
-			sequencer.setSequence(sequence);
-			initInstanceVariables();
-			goOverAllMidiTracks();
+		sequence = MidiSystem.getSequence(midiFile);
+		midiFileFormat = MidiSystem.getMidiFileFormat(midiFile);
+		sequencer.setSequence(sequence);
+		initInstanceVariables();
+		goOverAllMidiTracks();
 	}
 
 	public void loadNewMidiFile(String midiFileInput) throws InvalidMidiDataException, IOException {
@@ -285,8 +287,8 @@ public class MidiToITR {
 							if (totalMeasures < l_measure) {
 								totalMeasures = l_measure;
 							}
-							//we are only interested in Nodes of Channel 9 (DrumNodes)
-							if ( s.getChannel() == 9) {
+							// we are only interested in Nodes of Channel 9 (DrumNodes)
+							if (s.getChannel() == 9) {
 								myTrack[i].addNote(l_measure, l_tickInMeasure, l_midiTimeAbsolute, s.getChannel(),
 										s.getData1(), s.getData2());
 								System.out.println("add_drum_note channel 10");
@@ -449,12 +451,12 @@ public class MidiToITR {
 	 * @param offsetUntilStart
 	 *            waiting time from Start to begin of the song in measures
 	 */
-	public void convertTrackToITR(String itrFilePathName, String artistName, String titleName, String producerName,
-			int levelNumber, String pathTitleImage, int tracknum, int offsetUntilStart) {
+	public void convertTrackToITR(String itrFilePathName, String artistName, String titleName, String tileWav, String producerName,
+			int levelNumber, double volume, String pathTitleImage, int tracknum, int offsetUntilStart) {
 
 		createDifferentMidiNotes(getNumTrackDrums());
-		File toCreate = new File(
-				"output" + File.separator + "Note Sound" + File.separator + "CustomNoteSound" + File.separator + titleName);
+		File toCreate = new File("output" + File.separator + "Note Sound" + File.separator + "CustomNoteSound"
+				+ File.separator + titleName);
 
 		toCreate.getParentFile().getParentFile().getParentFile().mkdir();
 		toCreate.getParentFile().getParentFile().mkdir();
@@ -473,7 +475,7 @@ public class MidiToITR {
 			xMLStreamWriter.writeCharacters("\r\n  ");
 
 			xMLStreamWriter.writeStartElement("SOUNDPATH");
-			xMLStreamWriter.writeCharacters(titleName + ".wav");
+			xMLStreamWriter.writeCharacters(tileWav);
 			xMLStreamWriter.writeEndElement();
 			xMLStreamWriter.writeCharacters("\r\n  ");
 
@@ -498,7 +500,7 @@ public class MidiToITR {
 			xMLStreamWriter.writeCharacters("\r\n  ");
 
 			xMLStreamWriter.writeStartElement("NUM_MEASURE");
-			xMLStreamWriter.writeCharacters(Integer.toString(totalMeasures) + offsetUntilStart); // int offsetUntilStart
+			xMLStreamWriter.writeCharacters(Integer.toString(totalMeasures + offsetUntilStart)); // int offsetUntilStart
 																									// waiting time
 																									// until song begins
 			xMLStreamWriter.writeEndElement();
@@ -518,7 +520,18 @@ public class MidiToITR {
 			xMLStreamWriter.writeCharacters("\r\n");
 			Iterator<Integer> iter = myTrack1.midiNoteSet.iterator();
 
-			int i = 1;
+			// write the BMGNote
+			// e.g.<BGMNote ch="0" Measure="1" Position="0" BgmPath="Dancer.wav" Volume="1"
+			// />
+			xMLStreamWriter.writeCharacters("    ");
+			xMLStreamWriter.writeEmptyElement("BGMNote");
+			xMLStreamWriter.writeAttribute("ch", "0");
+			xMLStreamWriter.writeAttribute("Measure", Integer.toString(offsetUntilStart));
+			xMLStreamWriter.writeAttribute("Position", "0");
+			xMLStreamWriter.writeAttribute("BgmPath", tileWav);
+			xMLStreamWriter.writeAttribute("Volume", Double.toString(volume));
+			xMLStreamWriter.writeCharacters("\r\n");
+			int i = 0;
 			while (iter.hasNext()) {
 
 				// <TypeNode TypeIndex="0" ColorIndex="9" Type="./Note Sound/Sound
@@ -569,23 +582,14 @@ public class MidiToITR {
 				// Float.toString((float)myTrack1.myNoteList.get(i).velocity /
 				// myTrack1.getMaxVelocity()));
 				xMLStreamWriter.writeAttribute("Volume",
-						Float.toString((float) myTrack1.myNoteList.get(i).velocity / myTrack1.getMaxVelocity()));
+						// Float.toString((float) myTrack1.myNoteList.get(i).velocity
+						// myTrack1.getMaxVelocity()));
+						"1");
 				xMLStreamWriter.writeCharacters("\r\n");
 			}
-			// write the BMGNote
-			// e.g.<BGMNote ch="0" Measure="1" Position="0" BgmPath="Dancer.wav" Volume="1"
-			// />
-			xMLStreamWriter.writeCharacters("    ");
-			xMLStreamWriter.writeEmptyElement("BGMNote");
-			xMLStreamWriter.writeAttribute("ch", "0");
-			xMLStreamWriter.writeAttribute("Measure", Integer.toString(offsetUntilStart));
-			xMLStreamWriter.writeAttribute("Position", "0");
-			xMLStreamWriter.writeAttribute("BgmPath", titleName + ".wav");
-			xMLStreamWriter.writeAttribute("Volume", "1");
-			xMLStreamWriter.writeCharacters("\r\n");
-
 			xMLStreamWriter.writeCharacters("  ");
 			xMLStreamWriter.writeEndElement();
+
 			xMLStreamWriter.writeCharacters("\r\n");
 			xMLStreamWriter.writeCharacters("  ");
 			xMLStreamWriter.writeStartElement("EditorPath");
@@ -607,7 +611,6 @@ public class MidiToITR {
 				xMLStreamWriter.writeAttribute("Volumn", "1");
 				xMLStreamWriter.writeAttribute("ColorIndex", "0");
 				xMLStreamWriter.writeCharacters("\r\n");
-
 			}
 
 			xMLStreamWriter.writeCharacters("  ");
@@ -625,6 +628,7 @@ public class MidiToITR {
 
 			File file = new File(itrFilePathName);
 			file.getParentFile().mkdir();
+			file.getParentFile().getParentFile().mkdir();
 			java.io.FileWriter fw = new java.io.FileWriter(itrFilePathName);
 			fw.write(xmlString);
 			fw.close();
@@ -637,7 +641,46 @@ public class MidiToITR {
 		}
 	}
 
+	public void convertMidiToWavFile(String inputMidiFile, String outputWavFile, boolean dontCreateDrums)
+			throws IOException, InvalidMidiDataException {
+		if (dontCreateDrums == false) {
+			convertMidiToWavFile(inputMidiFile, outputWavFile);
+			return;
+		}
+
+		// createDrums == false;
+
+		Sequence sequence2 = MidiSystem.getSequence(midiFile);
+
+		// for Drums
+		for (int i = 0; i < sequence2.getTracks()[numTrackDrums].size(); ++i) {
+			if (sequence2.getTracks()[numTrackDrums].get(i).getMessage() instanceof ShortMessage) {
+				ShortMessage s = (ShortMessage) (sequence2.getTracks()[numTrackDrums].get(i).getMessage());
+				if (s.getChannel() == 9) {
+					if (s.getCommand() == ShortMessage.NOTE_ON) {
+						s.setMessage(s.getStatus(), s.getData1(), 0);
+					}
+				}
+			}
+		}
+
+		File tempMidFile = File.createTempFile("createTempWithoutDrums", ".mid");
+		try {
+			MidiSystem.write(sequence2, midiFileFormat.getType(), tempMidFile);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		System.out.println("createMidiFile done");
+		// now convert it to wav format
+		convertMidiToWavFile(tempMidFile.getAbsolutePath().toString(), outputWavFile);
+		System.out.println(tempMidFile.getAbsolutePath());
+		tempMidFile.delete();
+	}
+
 	public void convertMidiToWavFile(String inputMidiFile, String outputWavFile) throws IOException {
+
 		ProcessBuilder builder = null;
 		// create BGM folder if it's not there
 		(new File(outputWavFile).getParentFile().getParentFile()).mkdir();
@@ -647,9 +690,10 @@ public class MidiToITR {
 
 		if (isWindows()) {
 			// relative path Windows
-//"cmd.exe", "/c", "CD " + timidityPath, "&",
-			builder = new ProcessBuilder( timidityPath + File.separator + "timidity.exe", inputMidiFile ,"-Ow", "-o", outputWavFile);
-			
+			// "cmd.exe", "/c", "CD " + timidityPath, "&",
+			builder = new ProcessBuilder(timidityPath + File.separator + "timidity.exe", inputMidiFile, "-Ow", "-o",
+					outputWavFile);
+
 		}
 		// different on a Mac
 		if (isMacOSX()) {

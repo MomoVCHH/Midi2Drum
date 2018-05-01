@@ -1,1 +1,0 @@
-javac -d bin Midi2DrumUI.java

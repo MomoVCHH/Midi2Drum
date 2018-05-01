@@ -1,1 +1,1 @@
-javac -d bin Midi2DrumUI.java
+javac -d ../gameFiles Midi2DrumUI.java

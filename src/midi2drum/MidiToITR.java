@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -36,6 +38,13 @@ public class MidiToITR {
 	private Track[] tracks;
 	private int totalMeasures;
 	private int numTrackDrums = -1;
+	private MyTrack[] myTrack; // midi suports 16 channels
+
+	/**
+	 * Ticks per second
+	 */
+	private double ticksPerSecond;
+	private double tickSize;
 
 	/**
 	 * @return the numTrackDrums
@@ -153,7 +162,7 @@ public class MidiToITR {
 
 		System.out.println("createMidiFile done");
 		// now convert it to wav format
-		String outputWavFile = new File("output\\Note Sound\\CustomNoteSound\\" + titleName + File.separator
+		String outputWavFile = new File("Editor\\Note Sound\\CustomNoteSound\\" + titleName + File.separator
 				+ GeneralMidiPercussionKeyMap.getNameOfDrumForMidiNote(midiNote)).getAbsolutePath() + ".wav";
 		convertMidiToWavFile(tempMidFile.getAbsolutePath().toString(), outputWavFile);
 		System.out.println(tempMidFile.getAbsolutePath());
@@ -167,14 +176,6 @@ public class MidiToITR {
 	public void setNumTrackDrums(int numTrackDrums) {
 		this.numTrackDrums = numTrackDrums;
 	}
-
-	private MyTrack[] myTrack; // midi suports 16 channels
-
-	/**
-	 * Ticks per second
-	 */
-	private double ticksPerSecond;
-	private double tickSize;
 
 	public double getTicksPerSecond() {
 		return ticksPerSecond;
@@ -291,16 +292,16 @@ public class MidiToITR {
 							if (s.getChannel() == 9) {
 								myTrack[i].addNote(l_measure, l_tickInMeasure, l_midiTimeAbsolute, s.getChannel(),
 										s.getData1(), s.getData2());
-								System.out.println("add_drum_note channel 10");
+								// System.out.println("add_drum_note channel 10");
 							}
 
-							System.out.println("NoteOn: counter " + myTrack[i].numberOfTones());
-							System.out.println("track " + i + " / measure " + l_measure);
-							System.out.println("NoteOn: Tick_inMeasure:" + l_tickInMeasure);
-							System.out.println("NoteOn: Midi_Time_absolute " + track.get(j).getTick());
-							System.out.println("NoteOn: Midi Channel:" + s.getChannel());
-							System.out.println("NoteOn: pitch " + s.getData1());
-							System.out.println("NoteOn: velocity " + s.getData2() + "\n");
+							// System.out.println("NoteOn: counter " + myTrack[i].numberOfTones());
+							// System.out.println("track " + i + " / measure " + l_measure);
+							// System.out.println("NoteOn: Tick_inMeasure:" + l_tickInMeasure);
+							// System.out.println("NoteOn: Midi_Time_absolute " + track.get(j).getTick());
+							// System.out.println("NoteOn: Midi Channel:" + s.getChannel());
+							// System.out.println("NoteOn: pitch " + s.getData1());
+							// System.out.println("NoteOn: velocity " + s.getData2() + "\n");
 
 						}
 					}
@@ -361,7 +362,6 @@ public class MidiToITR {
 				myTrack[i].printOutMidiNoteSet();
 			}
 			System.out.println("End Track " + i);
-
 		}
 	}
 
@@ -451,17 +451,28 @@ public class MidiToITR {
 	 * @param offsetUntilStart
 	 *            waiting time from Start to begin of the song in measures
 	 */
-	public void convertTrackToITR(String itrFilePathName, String artistName, String titleName, String tileWav, String producerName,
-			int levelNumber, double volume, String pathTitleImage, int tracknum, int offsetUntilStart) {
+	public void convertTrackToITR(String itrFilePathName, String artistName, String titleName, String tileWav,
+			String producerName, int levelNumber, double volume, File titleImage, int tracknum, int offsetUntilStart) {
 
 		createDifferentMidiNotes(getNumTrackDrums());
-		File toCreate = new File("output" + File.separator + "Note Sound" + File.separator + "CustomNoteSound"
+		File toCreate = new File("Editor" + File.separator + "Note Sound" + File.separator + "CustomNoteSound"
 				+ File.separator + titleName);
 
 		toCreate.getParentFile().getParentFile().getParentFile().mkdir();
 		toCreate.getParentFile().getParentFile().mkdir();
 		toCreate.getParentFile().mkdir();
 		toCreate.mkdir();
+
+		// copy titleImage to Editor\Image
+		File destination = new File("Editor" + File.separator + "Image" + File.separator + titleImage.getName());
+		destination.getParentFile().mkdir();
+		
+		try {
+			Files.copy(titleImage.toPath(), (destination).toPath(), StandardCopyOption.REPLACE_EXISTING);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 		MyTrack myTrack1 = myTrack[tracknum];
 		try {
@@ -512,7 +523,7 @@ public class MidiToITR {
 			xMLStreamWriter.writeCharacters("\r\n  ");
 
 			xMLStreamWriter.writeStartElement("TITLEIMAGE");
-			xMLStreamWriter.writeCharacters(pathTitleImage);
+			xMLStreamWriter.writeCharacters(titleImage.getName());
 			xMLStreamWriter.writeEndElement();
 			xMLStreamWriter.writeCharacters("\r\n  ");
 

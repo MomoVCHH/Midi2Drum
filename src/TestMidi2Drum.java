@@ -30,10 +30,11 @@ public class TestMidi2Drum {
 			
 			String resourcesPath = new File("resources").getAbsolutePath();
 			String outputPath = new File("output").getAbsolutePath();
+			File pictureFile = new File("resources" + File.separator + "coverAlbum" + File.separator + "alt-antik-antiquitat-164899.jpg");
 			
 			double volume = 0.7;
 			midiToITR.convertTrackToITR(outputPath + File.separator + titleName + ".itr", artisName, titleName, titleName + ".wav",
-					producerName, level, volume , "Guns_n_Roses.jpg", midiToITR.getNumTrackDrums(), 1);
+					producerName, level, volume , pictureFile, midiToITR.getNumTrackDrums(), 1);
 			midiToITR.createSingleNoteMidi(resourcesPath + File.separator + "Guns_n_Roses_-_Sweet_Child_O_Mine.mid", 
 					midiToITR.getNumTrackDrums(),titleName);
 		

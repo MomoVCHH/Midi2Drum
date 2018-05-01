@@ -1,1 +1,1 @@
-java Midi2Drum
+java Midi2DrumUI

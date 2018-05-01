@@ -608,7 +608,8 @@ public class MidiToITR {
 			xMLStreamWriter.writeStartElement("EditorPath");
 			xMLStreamWriter.writeCharacters("\r\n");
 			iter = myTrack1.midiNoteSet.iterator();
-
+			
+			int j = 0;
 			while (iter.hasNext()) {
 				// <EditorPath>
 				// <DataGridViewNode Index="0" Type="./Note Sound/Sound Pack/Rock/Hihat_1.wav"
@@ -622,8 +623,9 @@ public class MidiToITR {
 				xMLStreamWriter.writeAttribute("LabelType", "./Note Sound/CustomNoteSound/" + titleName + "/"
 						+ GeneralMidiPercussionKeyMap.getNameOfDrumForMidiNote(midiNote) + ".wav");
 				xMLStreamWriter.writeAttribute("Volumn", "1");
-				xMLStreamWriter.writeAttribute("ColorIndex", "0");
+				xMLStreamWriter.writeAttribute("ColorIndex", Integer.toString(j));
 				xMLStreamWriter.writeCharacters("\r\n");
+				++j;
 			}
 
 			xMLStreamWriter.writeCharacters("  ");

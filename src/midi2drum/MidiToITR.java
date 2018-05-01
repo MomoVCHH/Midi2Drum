@@ -466,7 +466,7 @@ public class MidiToITR {
 		// copy titleImage to Editor\Image
 		File destination = new File("Editor" + File.separator + "Image" + File.separator + titleImage.getName());
 		destination.getParentFile().mkdir();
-		
+
 		try {
 			Files.copy(titleImage.toPath(), (destination).toPath(), StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e1) {
@@ -531,17 +531,6 @@ public class MidiToITR {
 			xMLStreamWriter.writeCharacters("\r\n");
 			Iterator<Integer> iter = myTrack1.midiNoteSet.iterator();
 
-			// write the BMGNote
-			// e.g.<BGMNote ch="0" Measure="1" Position="0" BgmPath="Dancer.wav" Volume="1"
-			// />
-			xMLStreamWriter.writeCharacters("    ");
-			xMLStreamWriter.writeEmptyElement("BGMNote");
-			xMLStreamWriter.writeAttribute("ch", "0");
-			xMLStreamWriter.writeAttribute("Measure", Integer.toString(offsetUntilStart));
-			xMLStreamWriter.writeAttribute("Position", "0");
-			xMLStreamWriter.writeAttribute("BgmPath", tileWav);
-			xMLStreamWriter.writeAttribute("Volume", Double.toString(volume));
-			xMLStreamWriter.writeCharacters("\r\n");
 			int i = 0;
 			while (iter.hasNext()) {
 
@@ -564,6 +553,19 @@ public class MidiToITR {
 			xMLStreamWriter.writeCharacters("  ");
 			xMLStreamWriter.writeStartElement("OBJS");
 			xMLStreamWriter.writeCharacters("\r\n");
+
+			// write the BMGNote
+			// e.g.<BGMNote ch="0" Measure="1" Position="0" BgmPath="Dancer.wav" Volume="1"
+			// />
+			xMLStreamWriter.writeCharacters("    ");
+			xMLStreamWriter.writeEmptyElement("BGMNote");
+			xMLStreamWriter.writeAttribute("ch", "0");
+			xMLStreamWriter.writeAttribute("Measure", Integer.toString(offsetUntilStart));
+			xMLStreamWriter.writeAttribute("Position", "0");
+			xMLStreamWriter.writeAttribute("BgmPath", tileWav);
+			xMLStreamWriter.writeAttribute("Volume", Double.toString(volume));
+			xMLStreamWriter.writeCharacters("\r\n");
+
 			float posQuote = (192.0f / (4 * sequence.getResolution()));
 
 			for (i = 0; i < myTrack1.myNoteList.size(); i++) {
